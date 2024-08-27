@@ -1,0 +1,44 @@
+# hw definition file for processing by chibios_hwdef.py
+# for H7S3 bootloader
+
+# MCU class and specific type
+MCU STM32H7xx STM32H7S3xx
+define CORE_CM7
+
+# crystal frequency
+OSCILLATOR_HZ 24000000
+
+# board ID for firmware load
+APJ_BOARD_ID AP_HW_Enthusiastics-UCPone
+
+FLASH_SIZE_KB 2048
+
+# bootloader is installed at zero offset
+FLASH_RESERVE_START_KB 0
+
+# the location where the bootloader will put the firmware
+# the H743 has 64k sectors
+FLASH_BOOTLOADER_LOAD_KB 64
+
+PB7 LED_RED OUTPUT LOW # red
+PD10 LED_ACTIVITY OUTPUT LOW # green
+PD13 LED_BOOTLOADER OUTPUT LOW # blue
+
+define HAL_LED_ON 0
+
+
+# order of UARTs (and USB)
+SERIAL_ORDER OTG1 UART7
+
+# UART7 is debug
+PA8 UART7_RX UART7 NODMA
+PA15 UART7_TX UART7 NODMA
+
+PM5 OTG_FS_DM OTG1
+PM6 OTG_FS_DP OTG1
+
+PA13 JTMS-SWDIO SWD
+PA14 JTCK-SWCLK SWD
+
+# enable DFU by default
+ENABLE_DFU_BOOT 1

@@ -1,0 +1,55 @@
+# hw definition file for processing by chibios_hwdef.py
+
+# MCU class and specific type
+MCU STM32H7xx STM32H7S3xx
+define CORE_CM7
+
+# crystal frequency
+OSCILLATOR_HZ 24000000
+
+# board ID for firmware load
+APJ_BOARD_ID AP_HW_Enthusiastics-UCPone
+
+FLASH_SIZE_KB 2048
+
+# bootloader takes first sector
+FLASH_RESERVE_START_KB 64
+
+
+# order of UARTs (and USB)
+SERIAL_ORDER OTG1 UART7
+
+# now we define the pins that USB is connected on
+PM5 OTG_FS_DM OTG1
+PM6 OTG_FS_DP OTG1
+
+# these are the pins for SWD debugging with a STlinkv2 or black-magic probe
+PA13 JTMS-SWDIO SWD
+PA14 JTCK-SWCLK SWD
+
+# UARTs
+
+# UART7 is debug
+PA8 UART7_RX UART7 NODMA
+PA15 UART7_TX UART7 NODMA
+
+# red LED marked as B/E
+PB7 LED_RED OUTPUT GPIO(90)
+
+# green LED marked as PWR. We leave this solid on, but allow
+# for it to be controlled as a relay if needed
+PD10 LED_GREEN OUTPUT GPIO(91) LOW
+
+# blue LED marked as ACT
+PD13 LED_BLUE OUTPUT GPIO(92) HIGH
+
+# setup for BoardLED2
+define AP_NOTIFY_GPIO_LED_2_ENABLED 1
+define HAL_GPIO_A_LED_PIN 90
+define HAL_GPIO_B_LED_PIN 92
+
+
+# enable DFU reboot for installing bootloader
+# note that if firmware is build with --secure-bl then DFU is
+# disabled
+ENABLE_DFU_BOOT 1
