@@ -1,6 +1,7 @@
 #include "Plane.h"
 
 #include "RC_Channel.h"
+#include "qautotune.h"
 
 // defining these two macros and including the RC_Channels_VarInfo
 // header defines the parameter information common to all vehicle
@@ -157,7 +158,9 @@ void RC_Channel_Plane::init_aux_function(const RC_Channel::AUX_FUNC ch_option,
     case AUX_FUNC::FBWA_TAILDRAGGER:
     case AUX_FUNC::FWD_THR:
     case AUX_FUNC::LANDING_FLARE:
+#if HAL_PARACHUTE_ENABLED
     case AUX_FUNC::PARACHUTE_RELEASE:
+#endif
     case AUX_FUNC::MODE_SWITCH_RESET:
     case AUX_FUNC::CRUISE:
 #if HAL_QUADPLANE_ENABLED
@@ -169,8 +172,14 @@ void RC_Channel_Plane::init_aux_function(const RC_Channel::AUX_FUNC ch_option,
     case AUX_FUNC::FW_AUTOTUNE:
     case AUX_FUNC::VFWD_THR_OVERRIDE:
     case AUX_FUNC::PRECISION_LOITER:
+#if AP_ICENGINE_ENABLED
+    case AUX_FUNC::ICE_START_STOP:
+#endif
 #if QAUTOTUNE_ENABLED
     case AUX_FUNC::AUTOTUNE_TEST_GAINS:
+#endif
+#if AP_QUICKTUNE_ENABLED
+    case AUX_FUNC::QUICKTUNE:
 #endif
         break;
 
@@ -287,6 +296,9 @@ bool RC_Channel_Plane::do_aux_function(const AUX_FUNC ch_option, const AuxSwitch
     case AUX_FUNC::FLAP:
     case AUX_FUNC::FBWA_TAILDRAGGER:
     case AUX_FUNC::AIRBRAKE:
+#if AP_ICENGINE_ENABLED
+    case AUX_FUNC::ICE_START_STOP:
+#endif
         break; // input labels, nothing to do
 
 #if HAL_QUADPLANE_ENABLED
@@ -447,6 +459,12 @@ bool RC_Channel_Plane::do_aux_function(const AUX_FUNC ch_option, const AuxSwitch
 #if QAUTOTUNE_ENABLED
     case AUX_FUNC::AUTOTUNE_TEST_GAINS:
         plane.quadplane.qautotune.do_aux_function(ch_flag);
+        break;
+#endif
+
+#if AP_QUICKTUNE_ENABLED
+    case AUX_FUNC::QUICKTUNE:
+        plane.quicktune.update_switch_pos(ch_flag);
         break;
 #endif
 

@@ -39,6 +39,9 @@ public:
 
     static const struct AP_Param::GroupInfo var_info[];
 
+    // One time init call
+    void init();
+
     // update engine state. Should be called at 10Hz or more
     void update(void);
 
@@ -90,9 +93,6 @@ private:
     // enable library
     AP_Int8 enable;
 
-    // channel for pilot to command engine start, 0 for none
-    AP_Int8 start_chan;
-
     // min pwm on start channel for engine stop
     AP_Int16 start_chan_min_pwm;
     
@@ -106,12 +106,10 @@ private:
 
     // delay between start attempts (seconds)
     AP_Float starter_delay;
-    
-    // pwm values 
-    AP_Int16 pwm_ignition_on;
-    AP_Int16 pwm_ignition_off;
-    AP_Int16 pwm_starter_on;
-    AP_Int16 pwm_starter_off;
+
+    // max crank retry
+    AP_Int8 max_crank_retry;
+    int8_t crank_retry_ct;
     
 #if AP_RPM_ENABLED
     // RPM above which engine is considered to be running
@@ -123,6 +121,9 @@ private:
 
     // time when we last ran the starter
     uint32_t starter_last_run_ms;
+
+    // time when we last had an uncommanded engine stop
+    uint32_t last_uncommanded_stop_ms;
 
     // throttle percentage for engine start
     AP_Int8 start_percent;
@@ -185,6 +186,10 @@ private:
         float throttle_percentage;
     } redline;
 #endif
+
+    // Param conversion function and flag
+    void param_conversion();
+    AP_Int8 param_format_version;
 };
 
 
